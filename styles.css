@@ -1,0 +1,76 @@
+/*-------------------------- CSS variables -------------------------------------*/
+
+:root {
+  --display-color: #CAD0D1;
+  --number-keys-color: magenta;
+  --operator-keys-color: #9DA8AB;
+  --bg-color: #80716D; /* background color */
+}
+
+
+/*------------------- applied to all elements or only the body -----------------------*/
+
+* {box-sizing: border-box;} /*assures every element does not exceed its specified width and height*/
+
+body {
+  background-color: var(--bg-color);
+} 
+
+
+/*------------------------------- display ---------------------------------------*/
+
+#display {
+  display: flex;
+  justify-content: end;
+  width: 75%;
+  height: 10vh;
+  background-color: var(--display-color);
+  border: 0.1em solid black;
+  font-size: 2rem;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+
+
+/*--------------------------------- all keys -----------------------------------*/
+
+.key {
+  width: 30%; 
+  border-radius: 20%;
+}
+
+
+/*----------------------- operator keys --------------------------*/
+
+#operator-key-wrapper {
+  border: 0.1rem solid black;
+  width: 75%;
+}
+
+.operator-key {
+  border: 0.05rem solid black;
+}
+
+
+/*----------------------- utility keys -----------------------------*/
+
+#utility-key-wrapper {
+  border: 0.1rem solid black;
+  width: 75%;
+}
+
+.utility-key {
+  border: 0.05rem solid black;
+}
+
+
+/*----------------------- number keys -----------------------------*/
+
+#number-key-wrapper {
+  border: 0.1rem solid black;
+  width: 75%;
+}
+
+.number-key {
+  border: 0.05rem solid black;
+}
