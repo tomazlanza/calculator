@@ -1,20 +1,36 @@
-/*-------------------------- CSS variables -------------------------------------*/
+/*------------------------------- CSS variables ---------------------------------------*/
 
 :root {
   --display-color: #CAD0D1;
   --number-keys-color: magenta;
   --operator-keys-color: #9DA8AB;
-  --bg-color: #80716D; /* background color */
+  --interface-bg-color: #3CA699; /* background color */
+  --bg-color: #BB4453; /* background color */
+  --key-bg-color: #1E544D;
+  --key-hover-bg-color: #2A756C;
 }
 
 
-/*------------------- applied to all elements or only the body -----------------------*/
+/*-------------------------- applied to all elements or the 'main' ones -----------------------*/
 
 * {box-sizing: border-box;} /*assures every element does not exceed its specified width and height*/
 
 body {
-  background-color: var(--bg-color);
+  background-color: var(--bg-color); 
+  display: flex;
+  justify-content: center;
 } 
+
+#interface-perimeter {
+  display: flex;
+  flex-direction: column;
+  border: 0.01rem solid black;
+  border-top: solid black 0.5rem;
+  border-radius: 3%;
+  max-width: 60vw;
+  background-color: var(--interface-bg-color);
+  box-shadow: 4px 4px 10px #06110F; 
+}
 
 
 /*------------------------------- display ---------------------------------------*/
@@ -22,55 +38,62 @@ body {
 #display {
   display: flex;
   justify-content: end;
-  width: 75%;
+  align-items: center;
   height: 10vh;
   background-color: var(--display-color);
   border: 0.1em solid black;
   font-size: 2rem;
   font-family: Georgia, 'Times New Roman', Times, serif;
+  overflow: scroll;
 }
-
 
 
 /*--------------------------------- all keys -----------------------------------*/
 
 .key {
-  width: 30%; 
+  width: 33%; 
   border-radius: 20%;
+  border: 0.05rem solid black;
+  background-color: var(--key-bg-color);
+  color: white;
 }
 
+.key:hover {
+  background-color: var(--key-hover-bg-color);
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  border: 0.1rem solid black;  
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
+}
+
+#key-wrapper {
+  border-bottom-left-radius: 3%;
+  border-bottom-right-radius: 3%;
+}
+
+#number-key-wrapper {
+  border-bottom-left-radius: 3%;
+  border-bottom-right-radius: 3%;
+}
 
 /*----------------------- operator keys --------------------------*/
 
-#operator-key-wrapper {
-  border: 0.1rem solid black;
-  width: 75%;
-}
-
 .operator-key {
-  border: 0.05rem solid black;
 }
 
 
 /*----------------------- utility keys -----------------------------*/
 
-#utility-key-wrapper {
-  border: 0.1rem solid black;
-  width: 75%;
-}
-
 .utility-key {
-  border: 0.05rem solid black;
 }
 
 
 /*----------------------- number keys -----------------------------*/
 
-#number-key-wrapper {
-  border: 0.1rem solid black;
-  width: 75%;
-}
-
 .number-key {
-  border: 0.05rem solid black;
 }
