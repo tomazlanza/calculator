@@ -8,7 +8,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="stylesheet" href="styles.css">
-
+  <script type="module" defer src="script.js"></script>
+  
   <title>Calculator</title>
 
 </head>
@@ -26,17 +27,17 @@
         <button id="multiplication-operator" class="key operator-key">*</button> 
         <button id="division-operator" class="key operator-key">/</button>
         <button id="potentiation-operator" class="key operator-key">^</button>
-        <button id="logarithm-operator" class="key operator-key">log</button>
-        <button id="root-operator" class="key operator-key">root</button> 
+        <button id="logarithm-operator" class="key operator-key">ln</button>
+        <button id="root-operator" class="key operator-key">sqr root</button> 
       </section>
 
       <section id="utility-key-wrapper" class="wrapper">
         <button id="result-key" class="key utility-key">=</button>
         <button id="display-clearing-key" class="key utility-key ">C</button>
         <button id="backspace-key" class="key utility-key">c--</button>
-        <button id="openning-brackets-key" class="key utility-key">[</button>
-        <button id="closing-brackets-key" class="key utility-key">]</button>
-        <button id="euler-number-key" class="key utility-key">e</button>
+        <button id="openning-brackets-key" class="key utility-key bracket-key">[</button>
+        <button id="closing-brackets-key" class="key utility-key bracket-key">]</button>
+        <button id="eulers-number-key" class="key utility-key">e</button>
         <button id="pi-number-key" class="key utility-key">pi</button>
       </section>
 
@@ -58,9 +59,6 @@
     </section>
   </div>
 
-  <script src="script.js"></script>
-
 </body>
-
 
 </html>
