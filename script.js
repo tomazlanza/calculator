@@ -1,26 +1,51 @@
-import { dog } from "./modules/jansen.js";
-
-console.log(dog);
-
 ///////////////////////////////////////////////////////////////////// CALCULATOR ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/* insert summary here */
+/* SUMMARY */
 
-//ALERT COMMAND
+  // declaring data structures
+
+  // objects relative to operators and utilities
+
+  // creating functions
+    // operator-and-utility-related functions
+    // onDisplay function
+    // functions for listening physical keys
+    // parseExpression function
+    // showResult functions
+
+  // declaring DOM variables
+
+  // creating event listeners
+
+// NOTE: although 'sign inverter' is in the HTML section relative to number keys, in this code it's considered a 'utility'
+
 
 ////////////////////////////////////////////////////////// declaring data structures ////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-let inputs = []; // receives inputs from pressed keys and stores them as strings
+let inputs = []; // stores inputs in a order that doesn't have a mathematical meaning
 
-let displayArray = []; // displays number-formatted inputs and results
+let displayArray = []; // stores the formatted inputs and results that'll be displayed
 
-let calculationStorage = []; // container of calculations history
+let lastCalculation = []; 
 
 let decimalIndicator = 0; // indicates if the last element of 'inputs' has a decimal separator
 
+let previousCalculationIndicator = 0; // indicates if there's been at least one calculation - i. e. if the equal sign '=' has been pressed before
+
+let justPressedResult = 0; // indicates if the previous action's been a result calculation - i. e. if the equal sign '=' has just been pressed
+
+
+//////////////////////////////////////////////////////// objects relative to operators and utilities ////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+////// special-operator functions //////
+const naturalLog = (a) => Math.log(a);
+const sqrRoot = (a) => Math.sqrt(a);
+
+////// objects to gather operators and utilities
 const operators = { 
   '+':  (a, b) => a + b,
   '-':  (a, b) => a - b,
@@ -36,65 +61,87 @@ const utilities = {
   ']': ']',
   ',': ',',
   'backspace': backspace,
-  'display_clearing': display_clearingFunction // NOTE: change this name
+  'display_clearing': displayClearingFunction, 
+  'sign_inverter': signInverterFunction
 };
 
+////// other useful objects
+const numberFormatter = new Intl.NumberFormat('pt-br', {maximumFractionDigits: 6}); // creating an object from 'Intl' for number formatting 
 
-///////////////////////////////////////////////////////////////////// creating functions  ///////////////////////////////////////////////////////////////////////
+function setDisplaySize () { 
+  const numberOfCharacters = display.textContent.split('');
+ 
+//   const mediaQuery = window.matchMedia("(max-width: 768px)");
+
+// // Function to handle changes in the media query state
+// function handleMediaQueryChange(mediaQuery) {
+//   if (mediaQuery.matches) {
+//     // The media query is true (e.g., the window width is <= 768px)
+//     // Add your JavaScript logic for this condition here
+//     console.log("Media query matched. You can apply your logic here.");
+//   } else {
+//     // The media query is false (e.g., the window width is > 768px)
+//     // Add your JavaScript logic for this condition here
+//     console.log("Media query not matched. You can apply your logic here.");
+//   }
+// }  
+
+  numberOfCharacters.length < 14 ? display.style.fontSize = '1.5rem' : null;
+  numberOfCharacters.length > 15 ? display.style.fontSize = '1.3rem' : null;
+  numberOfCharacters.length > 20 ? display.style.fontSize = '1.1rem' : null;
+  numberOfCharacters.length > 25 ? display.style.fontSize = '0.9rem' : null;
+  numberOfCharacters.length > 30 ? display.style.fontSize = '0.75rem' : null;
+}
+
+
+///////////////////////////////////////////////////////////////////// creating functions  /////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 //////////////////// operator-and-utility-related functions ////////////////////
 
-////// special operators //////
-
-function naturalLog (a) {
-  if (a <= 0) {
-  /* let temp = display.textContent;
-    alert('Invalid entry: the logarithm function is only defined for positive real numbers');
-    setTimeout(() => { // Schedule the revert after 2 seconds
-      display.textContent = temp;
-    }, 2000); */
-  
-  } else {
-    return Math.log(a);
-  }
-}
-
-function sqrRoot (a) {
-  if (a < 0) {
-    /*let temp = display.textContent;
-    alert('Invalid entry: result is not a real number');
-    setTimeout(() => { // Schedule the revert after 2 seconds
-      display.textContent = temp;
-    }, 2000); */
-  } else {
-    return Math.sqrt(a);
-  }
-}
-
-
 //// utilities
-
 function backspace () {
-  // this function shall only erase the last entered element 
+  // this function shall only erase the last entered element
+
+  if (inputs.length === 0) { 
+    return;
+  }   
+
+  if (justPressedResult === 1) { 
+    displayClearingFunction();
+    return;
+  }   
 
   let auxArray = [];
 
-  let erasedElement; // the erased element will be tested for decimal separator on row 104
+  let erasedElement; // the erased element will be further tested for decimal separator 
 
   if ((inputs[inputs.length - 2] != 'ln') && // if a special operator hasn't been input in penultimate index
     (inputs[inputs.length - 2] != 'sqr root') 
   ) {
+    
     // removes last input element
-    inputs.length > 0 ? auxArray = inputs[inputs.length-1].split('') : null;
+    auxArray = inputs[inputs.length - 1].split('');
     erasedElement = auxArray.pop(); 
     inputs[inputs.length-1] = auxArray.join('');
     
+    if (inputs[inputs.length - 1].length === 0) { // if last input element has length zero after the extraction, remove it
+      inputs.pop();
+      displayArray.pop();
+      display.textContent = displayArray.join(' ');
+      inputs.length === 0 ? display.textContent = 0 : null; 
+
+      setDisplaySize();
+      return;
+    } 
+    
     // removes last displayed element
-    displayArray.length > 0 ? auxArray = displayArray[displayArray.length-1].split('') : null;
-    auxArray.pop();
-    displayArray[displayArray.length-1] = auxArray.join('');
-  
+    if (inputs[inputs.length - 1 ] === '-') {
+      displayArray[displayArray.length - 1] = inputs[inputs.length - 1];
+    } else {
+      displayArray[displayArray.length - 1] = numberFormatter.format(parseFloat(inputs[inputs.length - 1]));
+    }
+
   } else {
     inputs.pop();// each command is done twice due to the bracket that follows special operators
     inputs.pop();
@@ -102,234 +149,470 @@ function backspace () {
     displayArray.pop();
   }
     
-  //statements with conditional operator: '?' ----> QUESTION: is this more readable then the traditional if statement?
-  inputs[inputs.length - 1].length == 0 ? inputs.pop() : null; // if last input element has length zero, remove it
   inputs.length > 0 ? display.textContent = displayArray.join(' ') : display.textContent = 0; 
   erasedElement == '.' ? decimalIndicator = 0 : null;
+  
+  setDisplaySize();
 }
 
-function display_clearingFunction () {
+
+function displayClearingFunction () {
   inputs = []; 
   displayArray = [];
-  calculationStorage = [];
-  display.textContent = 0;
+  lastCalculation = [];
+  display.textContent = '0';
+  justPressedResult = 0;
+  setDisplaySize();
 }
 
-////////////////////////////////////////
 
+function signInverterFunction () {
+  
+  // restricting this function to numbers
+  if (
+      (inputs[inputs.length - 1] === '[') ||
+      (inputs[inputs.length - 1] === ']') 
+     ) {
+      return;
+  }
 
-const onDisplay = function () { 
+  let auxArray = [];
+  auxArray = inputs[inputs.length - 1].split('');
 
+  // inverting the number
+  if (auxArray[0] === '-') {
+    auxArray.shift();
+  } else {
+    auxArray.unshift('-');
+  }
+
+  inputs[inputs.length - 1] = auxArray.join('');
+  
+  /////// updating the display
+
+  // if the inversion is made on special numbers
+  if (isNaN(inputs[inputs.length - 1])) {
+    displayArray[displayArray.length - 1] = inputs[inputs.length - 1];
+    display.textContent = displayArray.join(' ');
+  } 
+  
+  // for non-special numbers
+  if (!isNaN(inputs[inputs.length - 1])) {
+    displayArray[displayArray.length - 1] = numberFormatter.format(parseFloat(inputs[inputs.length - 1]));
+    display.textContent = (displayArray.join(' '));
+    
+  } 
+
+}
+
+///////////////// onDisplay function
+
+const onDisplay = function () {
+  
+  // When a result has just been called - i. e. 'equal' sign '=' has just been pressed -,
+    // clear all elements if anything besides 'normal' operators is input
+  if (
+      (
+        (justPressedResult === 1) &&
+        (
+          (this.textContent !== '+') &&
+          (this.textContent !== '-') &&
+          (this.textContent !== '*') &&
+          (this.textContent !== '/') &&
+          (this.textContent !== '^') 
+        )
+      ) ||
+      (display.textContent == '0' && inputs.length < 1)
+   ) {
+      displayClearingFunction();
+      previousCalculationIndicator = 0;
+   }
+  
+  
+  // checking for decimal separator in the last input
   if (inputs.length > 0) {
-    for (let i = 0; i < inputs[inputs.length - 1].length; i++) { // checks if the lastly inserted element has a decimal separator
+    for (let i = 0; i < inputs[inputs.length - 1].length; i++) { 
       if (inputs[inputs.length - 1][i] === '.') {
         decimalIndicator = 1;
       }
     }
   }
   
-  ///////// dealing with operators & utilities ////////////
+  ///// INSERTING ELEMENTS IN 'INPUTS' ARRAY
+    // for which there are 18 conditions listed below 
 
-  if (
-      ((operators.hasOwnProperty(this.textContent) && inputs.length == 0)) && 
-      ((this.textContent != 'ln') && (this.textContent != 'sqr root'))
-  ) { // the first input cannot be an operator, unless it's 'ln' or 'sqr root'
-     return; 
-  } else if ( // if the last input element is an operator, only 'ln' and 'sqr root' can follow it
-      ((operators.hasOwnProperty(this.textContent)) &&
+  ///////// operators & utilities ////////////
+  // #1
+  if ( // the first input cannot be an operator, unless it's either a 'minus sign' or a special operator
+      ((operators.hasOwnProperty(this.textContent) && inputs.length === 0)) && 
+      (
+        (this.textContent !== 'ln') && 
+        (this.textContent !== 'sqr root') && 
+        (this.textContent !== '-') 
+      )
+  ) { 
+      return; 
+  
+  // #2
+  } else if ( // if the last input element is an operator, only a 'minus sign' or a special operator can follow it
+      (
+        (operators.hasOwnProperty(this.textContent)) &&
         (
           (this.textContent != 'ln') && 
-          (this.textContent != 'sqr root')
+          (this.textContent != 'sqr root') &&
+          (this.textContent != '-') 
         )
       ) &&
       (operators.hasOwnProperty(inputs[inputs.length - 1]))
   ) { 
       return; 
-  } else if ( // if brackets are typed, they are added to inputs separately from numbers
-      this.textContent === (utilities['[']) || 
-      this.textContent === (utilities[']'])
+
+  // #3 // allowing insertion of a 'minus sign' for indication of negative numbers
+  } else if (
+      (
+        (!isNaN(this.textContent))  ||
+        (this.textContent === 'e')  ||
+        (this.textContent === 'pi')  
+      ) &&
+      (
+        (inputs[inputs.length - 1] === '-') &&
+        (isNaN(inputs[inputs.length - 2]))
+      )
+  ) {
+      let auxArray = [];
+
+      auxArray = inputs[inputs.length - 1].split('')
+      auxArray.push(this.textContent);
+      inputs[inputs.length - 1] = auxArray.join('');
+    
+  // #4 // a closing bracket cannot be added:  
+  } else if ( 
+      this.textContent === utilities[']'] && 
+      (
+        operators.hasOwnProperty(inputs[inputs.length-1]) || // immediately after either an operator or
+        inputs[inputs.length-1] === utilities['[']              // an opening bracket
+      )
+  ){
+      return;
+
+  // #5 // an opening bracket cannot be inserted: 
+  } else if ( 
+    this.textContent === utilities['['] &&
+    (
+      inputs[inputs.length - 1] === utilities[']'] || // immediately after either a closing bracket 
+      !isNaN(inputs[inputs.length - 1])                   // or a number 
+    )
+  ) { 
+      return;
+
+  // #6  // if brackets are typed, they are added to inputs separately from numbers
+  } else if ( 
+      this.textContent === utilities['['] 
   ) { 
       inputs.push(this.textContent);
-  } else if ( // if the last input element is an openning bracket, only 'ln' and 'sqr root' can follow it
+  
+  // #7 // a closing bracket cannot be added if it doesn't have a correspondent opening bracket
+  } else if ( 
+      this.textContent === utilities[']'] 
+  ) { 
+      let countOpening = 0;
+      let countClosing = 0;
+
+      for (let i = 0; i < inputs.length; i++) {
+        
+        if (inputs[i] === utilities['[']) {
+          countOpening++;
+        } else if (inputs[i] === utilities[']']) {
+          countClosing++;
+        }
+      }    
+
+      if (countClosing === countOpening){
+        return;
+      } else {
+         inputs.push(this.textContent);
+      }
+
+  // #8  // if the last input element is an opening bracket, it only can be followed either by a 'minus sign' or a special operator
+  } else if ( 
+    (inputs[inputs.length - 1] === utilities['[']) &&
     ((operators.hasOwnProperty(this.textContent)) &&
       (
-        (this.textContent != 'ln') && 
-        (this.textContent != 'sqr root')
+        (this.textContent !== 'ln') && 
+        (this.textContent !== 'sqr root') &&
+        (this.textContent !== '-')
       )
-    ) &&
-    (inputs[inputs.length - 1] === utilities['['])
+    ) 
   ) {
-    return;
- }  else if ( 
-    (this.textContent == 'ln') || 
-    (this.textContent == 'sqr root')
-  ) {
-    inputs.push(this.textContent);
-    inputs.push('[');
-  }
-
-  ////////// dealing with numbers //////////
-
-  //// zeroes ////
+      return;  
   
-  else if ( // zero cannot be entered twice as first and second digits
-    (this.textContent === '0') && 
-    (inputs[inputs.length - 1] === '0')
+  // #9 // a special operator cannot be added immediately after a number
+  } else if ( 
+      (
+        this.textContent === 'ln' || 
+        this.textContent === 'sqr root'
+      ) &&
+      (
+        (!isNaN(inputs[inputs.length - 1])) || 
+        (
+          (utilities.hasOwnProperty(inputs[inputs.length - 1])) &&
+          (inputs[inputs.length - 1] !== '[') 
+        ) ||
+        (inputs[inputs.length - 1] === 'e') ||
+        (inputs[inputs.length - 1] === 'pi')
+      )
+  ) {
+      return;
+
+  // #10 //when inserting a special operator, an opening bracket is automatically added after it
+  } else if ( 
+      (this.textContent == 'ln' || this.textContent == 'sqr root') &&
+      (!justPressedResult)
+  ) {
+      inputs.push(this.textContent);
+      inputs.push('[');
+      displayArray.push(this.textContent);
+      displayArray.push('[');
+      display.textContent = displayArray.join(' ');
+      setDisplaySize();
+      return;
+
+  ////////// numbers //////////
+  //// zeroes ////
+
+  // #11 // zero cannot be entered twice as first and second digits
+  } else if ( 
+      (this.textContent === '0') && 
+      (inputs[inputs.length - 1] === '0')
   ) { 
-    return;
-  } else if ( // zero after decimal separators
-    (this.textContent === '0') && 
-    (decimalIndicator === 1)
-  ) { // adjustments on display made here for showing the 'zero' digit coming right after a decimal separator 
-    inputs[inputs.length - 1] += this.textContent; 
-    displayArray[displayArray.length - 1] += this.textContent;
-    display.textContent = displayArray.join(' ');
-    return;
-  }
+      return;
+
+  // #12 // zero after decimal separators
+  } else if ( 
+      (this.textContent === '0') && 
+      (decimalIndicator === 1)
+  ) { 
+      inputs[inputs.length - 1] += this.textContent; 
+      displayArray[displayArray.length - 1] += this.textContent;
+      display.textContent += this.textContent;
+      return;
 
   //// special numbers ////
-
-    else if (
+  // #13
+  }  else if (
       (this.textContent === 'e') ||
       (this.textContent === 'pi') 
   ) {
-    inputs.push(this.textContent); 
-    displayArray.push(this.textContent);
-    display.textContent = displayArray.join(' ');
-    return;
-  }
+      inputs.push(this.textContent); 
+      displayArray.push(this.textContent);
+      display.textContent = displayArray.join(' ');
+      return;
+  
 
   //// other numbers ////
+  // #14 // numbers cannot be inserted right after an utility character, unless it's the opening brackets
+  } else if ( 
+      (!operators.hasOwnProperty(this.textContent) && !utilities.hasOwnProperty(this.textContent)) &&
+      (
+        (utilities.hasOwnProperty(inputs[inputs.length - 1]) && ((inputs[inputs.length - 1] != '[')))
+      )
+  ) { 
+      return;
   
-  else if ( // numbers cannot be inserted right after an utility character, unless it's the openning brackets
-    (!operators.hasOwnProperty(this.textContent) && !utilities.hasOwnProperty(this.textContent)) &&
-    (
-      (utilities.hasOwnProperty(inputs[inputs.length - 1]) && ((inputs[inputs.length - 1] != '[')))
-    )
+  // #15 // if a digit is entered 'on top' of a number, concatenate them
+  } else if ( 
+      (
+        !isNaN(parseFloat(inputs[inputs.length - 1])) && 
+        !operators.hasOwnProperty(this.textContent) && 
+        !utilities.hasOwnProperty(this.textContent)
+      ) 
   ) { 
-    return;
-  } else if ( // if a digit is entered 'on top' of a number, concatenate them
-    (
-      !Number.isNaN(parseFloat(inputs[inputs.length - 1])) && 
-      !operators.hasOwnProperty(this.textContent) && 
-      !utilities.hasOwnProperty(this.textContent)
-    ) 
-  ) { 
-    inputs[inputs.length - 1] += this.textContent; 
-    displayArray[displayArray.length - 1] += this.textContent; 
-  }
+      inputs[inputs.length - 1] += this.textContent; 
   
   //// decimal separator ////
+  // #16
+  } else if (this.textContent === utilities[',']) {
 
-  else if (this.textContent === utilities[',']) {
+    // a decimal separator cannot be added immediately after neither an utility nor an operator character
+    if(
+        (operators.hasOwnProperty(inputs[inputs.length - 1])) ||
+        (utilities.hasOwnProperty(inputs[inputs.length - 1])) ||
+        (
+          (inputs[inputs.length - 2] === 'ln') ||
+          (inputs[inputs.length - 2] === 'sqr root')
+        )
+      ) {
+        return;
+    }
+
+    // allowing decimal separator to be the first input
+    if (
+        (display.textContent === '0') &&
+        (inputs.length < 1)
+    ) {
+      inputs.push('0');
+      inputs[0] += '.';
+      displayArray.push('0');
+      displayArray[0] += ',';
+      display.textContent = displayArray.join('');
+      return;
+    }
+    
+    // returns if there is already a decimal separator in the last element
     for (let i = 0; i < inputs[inputs.length - 1].length; i++) {
-      if (inputs[inputs.length - 1][i] === '.') { // checks if there already is a decimal separator in the last element
+      if (inputs[inputs.length - 1][i] === '.') { 
         return;  
       } 
     }
     
     inputs[inputs.length - 1] += '.';
-    displayArray[displayArray.length - 1] += ',';
+    displayArray[displayArray.length - 1] += '.';
+    displayArray[displayArray.length - 1] = displayArray[displayArray.length - 1].replace(/.([^.]*)$/, ',$1');
     display.textContent = displayArray.join(' ');
     return;
-  } 
   
-  //// remaining case: typing first non-zero digit ///
-  else { 
+  
+  ////// remaining case
+  // #17
+  ////  typing a non-special operator or starting a new number ///
+  } else { 
     inputs.push(this.textContent);
   }   
 
 
-  //////////// setting thousand-separator format and filling up displayArray ////////////
+  //////////// setting number format and updating the display 
+  ////////////////////////////////////////////////////////////////
 
-  const numberFormatter = new Intl.NumberFormat('pt-br', {maximumFractionDigits: 6}); // creating an object using a formatting method from 'Intl'
-  
+  /////// UPDATING THE DISPLAY
+    // for which there are 5 conditions below
+
   if (inputs.length > 0) {
-    for (let i = 0; i < inputs.length; i++ ) {
-      if (
-          (operators.hasOwnProperty(inputs[i])) || 
-          (utilities.hasOwnProperty(inputs[i]))
-      ) {
-          displayArray[i] = inputs[i];
-      } else if (
-          (inputs[i] != 'e') &&
-          (inputs[i] != 'pi')
-      ) {
-          displayArray[i] = numberFormatter.format(parseFloat(inputs[i]));
-      } else {
-          displayArray[i] = inputs[i];
-      }
-    }
-    display.textContent = displayArray.join(' ');    
-  }
-
-  //// setting font size based on inputs length
-
-  if (inputs.length > 8) {
-    display.style.fontSize = '1rem';
-    display.style.backgroundColor = 'red';
-  } else if (inputs.length > 15) {
-    display.style.fontSize = '0.5rem';
-  } 
   
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-const bracketTagger = function (expression) {
-  
-  let bracketsIndexes = {}; // object to store indexes
-
-  for (let i = 0; i < expression.length; i++) {
-    if (((expression[i] == '[')) ||
-        (expression[i] == ']')
-      ) {
-       bracketsIndexes[String(i)] = expression[i]; // tags AKSJFLKAJSd
-    }
-  }
-
-  return bracketsIndexes;
-}
-
-/*
-function parseBracketsOne (brackets) {
-
-  let bracketsCopy = brackets;
-
-  for (let i = 0; i < bracketsCopy.length; i++) { 
-    if (bracketsCopy[i] === '[') {
-      for (let j = i; j < bracketsCopy.length; j++) {
-        if (bracketsCopy[j] === '[') {
-          parseBrackets
-
-        } else if (bracketsCopy[j] === ']') {
-
-          let withinBrackets = bracketsCopy.slice(i + 1, j);
-          withinBrackets = bracketsCopy.slice(i + 1, j);
+    // #1  // operators and utilities 
+    if (
+        (operators.hasOwnProperty(inputs[inputs.length - 1])) || 
+        (utilities.hasOwnProperty(inputs[inputs.length - 1]))
+    ) {
+        displayArray.push(inputs[inputs.length - 1]); 
     
-          // it is needed allowing calculations with multiple nested brackets
-          
-          bracketsCopy.splice(i, j-i+1, parseExpression(withinBrackets)); // switches the expression and its brackets for its parsed value
+    // #2 // when having decimal separator: digit zero
+    } else if (                                                    // adjustments on display made here for showing 
+          this.textContent == '0' &&                                // the 'zero' digit coming right after a decimal separator 
+          decimalIndicator === 1
+    ) { 
+        displayArray[displayArray.length - 1] += this.textContent;
 
-          console.log('this is bracketsCopy during "for" loop:' + bracketsCopy);
-          console.log('this is calculationStorage during "for" loop:' + calculationStorage);
+    // #3 when having decimal separator: other digits
+    } else if ( 
+        !isNaN(this.textContent) && 
+        decimalIndicator === 1
+    ) { 
+        displayArray[displayArray.length - 1] += this.textContent;
 
-          break;
+    // #4 // normal and 'special' numbers
+    } else if (
+      (
+      !operators.hasOwnProperty(displayArray[displayArray.length - 1]) &&
+      !utilities.hasOwnProperty(displayArray[displayArray.length - 1])
+      ) &&
+      !operators.hasOwnProperty(this.textContent) && 
+      !utilities.hasOwnProperty(this.textContent)
+    ) {
+        //if displayArray is empty, push a zero into it for placeholding
+      displayArray.length === 0 ? displayArray.push('0') : null;
+      
+      // if the last displayed element is a number, it'll be 'unformatted'
+      let unformattedDisplayElement = displayArray[displayArray.length - 1].replace(/\./g, ''); //removing any thousand-separator dot
+      unformattedDisplayElement = parseFloat(unformattedDisplayElement.replace(/,/g, '.')); //replacing eventual decimal-separator 
+                                                                                                  // comma for a dot
+      // re-formatting 
+      if (
+        (!isNaN(unformattedDisplayElement)) 
+      ) {
+      
+        if (unformattedDisplayElement === 0){
+          displayArray.shift();
+          displayArray.push(this.textContent);
+          displayArray[displayArray.length - 1] = numberFormatter.format(displayArray[displayArray.length - 1]);
+        } else {
+          displayArray[displayArray.length - 1] = unformattedDisplayElement.toString(); 
+          displayArray[displayArray.length - 1] += this.textContent; 
+          displayArray[displayArray.length - 1] = numberFormatter.format(displayArray[displayArray.length - 1]);
         }
+      
+      } else {
+        displayArray.push(this.textContent);
       }
+
+    // #5 // displaying negative numbers 
+    } else if (
+      (
+        (!isNaN(this.textContent)) ||
+        (this.textContent === 'e') ||
+        (this.textContent === 'pi') 
+      ) &&
+      (
+        inputs[inputs.length - 1][0] === '-' &&
+        isNaN(inputs[inputs.length - 2])
+      )
+    ) {
+      let auxArray = [];
+
+      auxArray = displayArray[displayArray.length - 1].split('')
+      auxArray.push(this.textContent);
+      displayArray[displayArray.length - 1] = auxArray.join('');
+
+    } else {
+        displayArray.push(inputs[inputs.length - 1]);
     }
+      
+    display.textContent = displayArray.join(' ');    
+
   }
-
-  return bracketsCopy;
+  
+  //// setting font size based on inputs length 
+  //////////////////
+  setDisplaySize();
+  
+  //resetting indicators
+  decimalIndicator = 0; 
+  justPressedResult = 0; 
 }
-*/
+
+///////////// functions for listening physical keys
+
+function physicalKeysDisplay (event) {
+  
+  const key = event.key; // Getting key value
+
+  if (keyMap.hasOwnProperty(key)) {
+    
+    keyMap[key].classList.add('hover-effect'); 
+    keyMap[key].click(); // Simulate a click on the corresponding virtual key
+    
+  }
+}
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+function physicalKeysHover (event) {
+  const key = event.key;
+  
+  if (keyMap.hasOwnProperty(key)) {
+  
+    keyMap[key].classList.remove('hover-effect');   // Remove hover effect when key is released
+  }
+}
+
+///////// parseExpression function
+////////////////////////
 
 const parseExpression = function (expression) { 
-  
-  let expressionCopy = JSON.parse(JSON.stringify(expression));
+
+  if (justPressedResult === 1) {
+    return;
+  }
+
+  let expressionCopy = JSON.parse(JSON.stringify(expression)); // creating a copy to be altered
    
   // evaluates expression that contains only numbers and operators - doesn't parse brackets
   /* order of operators precedence: 
@@ -341,19 +624,24 @@ const parseExpression = function (expression) {
   let tempCalculations = []; 
 
   //// converting special numbers representations to values
-  
   for (let i = 0; i < expression.length; i++) {
     if (expression[i] === 'e') {
       expressionCopy[i] = Math.E;
     } else if (expression[i] === 'pi'){
       expressionCopy[i] = Math.PI;
+    
+    // sign-inverted cases
+    } else if (expression[i] === '-e') {
+      expressionCopy[i] = (-1)*Math.E;
+    } else if (expression[i] === '-pi'){
+      expressionCopy[i] = (-1)*Math.PI;
     }
   }
-
   
   //// parsing 
 
   for (let i = 0; i < expressionCopy.length; i++) {
+  
     // #1 
     if (
         (operators.hasOwnProperty(expressionCopy[i])) &&
@@ -366,10 +654,12 @@ const parseExpression = function (expression) {
         expressionCopy.splice(i-1, 3, tempCalculations[tempCalculations.length - 1]);
         
         i -= 1;
+
     } else if ( 
         (operators.hasOwnProperty(expressionCopy[i])) &&
         ((expressionCopy[i] === 'ln') || (expressionCopy[i] === 'sqr root'))
       ) {
+        
         let operand1 = parseFloat(expressionCopy[i+2]);
         tempCalculations.push(String(operators[expressionCopy[i]](operand1)));
         
@@ -414,33 +704,129 @@ const parseExpression = function (expression) {
   return expressionCopy;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const bracketTagger = function (expression) {
+  
+  let bracketsIndexes = {}; // object to store indexes
+
+  for (let i = 0; i < expression.length; i++) {
+    if (((expression[i] == '[')) ||
+        (expression[i] == ']')
+      ) {
+       bracketsIndexes[String(i)] = expression[i]; // 
+    }
+  }
+
+  return bracketsIndexes;
+}
+
+///////// showResult functions
+///////////////////////
 
 const showResult = function () { // 
 
-  /* short description of the function, e. g. "this function does 'n' things and has 'm' parts" */ 
-  // Loop for identifying a openning bracket, inside which calculations have priority
-
-  const numberFormatter = Intl.NumberFormat('pt-br', {maximumFractionDigits: 6}); // using a formatting method from built-in object 'Intl'
+  // NOTE: this function calls showResultSubFunction, which is global-scope-declared ahead
   
-  let inputsCopy = JSON.parse(JSON.stringify(inputs)); // creating a copy to be altered    
+  /////// THREE CONDITIONS FOR SHOWING RESULT
 
-  //if the expression has brackets-contained subexpressions
+  ///// #1 WHEN THERE'RE NO INPUTS
+  ////////////////////////////////////////////
+  
+  // if there have been no inputs, return
+  if (
+    (
+      display.textContent === '0' ||
+      inputs.length === 0
+    ) || 
+    (justPressedResult === 1)
+  ) {
+    return;
+  }
 
+  ///// #2 WHEN A CALCULATION HASN'T BEEN DONE YET (i. e. previousCalculationIndicator === 0)
+  ////////////////////////////////////////////////
+  
+  if (previousCalculationIndicator === 0) { 
+    showResultSubFunction(inputs);    
+  
+  ///// # 3 WHEN A CALCULATION HAS ALREADY BEEN DONE (i. e. previousCalculationIndicator === 1)
+  ////////////////////////////////////////////////////
+  } else if (previousCalculationIndicator === 1) {
+    showResultSubFunction(displayArray);     
+  }
+  
+};
+
+
+function showResultSubFunction (expression) {
+
+  // creating a deep copy that'll be altered during calculations
+  let inputsCopy = JSON.parse(JSON.stringify(expression)); 
+
+  //if the expression has brackets, they'll be tagged
   let bracketIndexes = bracketTagger(inputsCopy);
-  
   let indexes = Object.keys(bracketIndexes);
 
-  if (indexes.length % 2 === 0) { 
+  ///////////////////inserting additional brackets inside the special operator 
+  ///////////////////////// so that showResult and ParExpression can properly function 
+  ////////////////////////////////////////////////////////////////
+  
+  for (let i = 0; i < indexes.length; i++) {
+    if ((inputsCopy[indexes[i]] === '[')) {
+      
+      let startIndex = +indexes[i] + 1;
+      inputsCopy.splice(startIndex, 0, '[');
+      
+      // adding an unit to further indexes, given the array's length's been altered
+      indexes = indexes.map((index)=> String(parseFloat(index) + 1));
+    }
+  }
+  
+  // resetting bracket tags
+  bracketIndexes = bracketTagger(inputsCopy);
+  indexes = Object.keys(bracketIndexes);
+
+  for (let i = 0; i < indexes.length; i++) {
+    if ((inputsCopy[indexes[i]] === ']')) {
+      
+      let startIndex = +indexes[i] + 1;
+      inputsCopy.splice(startIndex, 0, ']')
+      
+      // adding an unit to further indexes
+      indexes = indexes.map((index)=> String(parseFloat(index) + 1));
+    }
+  }
+  // resetting bracket tags
+  bracketIndexes = bracketTagger(inputsCopy);
+  indexes = Object.keys(bracketIndexes);
+
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  /// checking for missing brackets
+  let openingBracketsCounter = 0;
+  let closingBracketsCounter = 0;
+
+  for (let i = 0; i < indexes.length; i++) {
+    if (inputsCopy[indexes[i]] === '[') {
+      openingBracketsCounter += 1;
+
+    } else if (inputsCopy[indexes[i]] === ']') {
+      closingBracketsCounter += 1;
+    }
+  }
+  
+  if (closingBracketsCounter == openingBracketsCounter) { 
     for (let j = 0; j < indexes.length; j++) { 
+      // if the first-found closing bracket isn't part of a special operator (i. e. 'ln' or 'sqr root')
       if (
-        (inputsCopy[indexes[j]] === ']') && // this is only true if the first-found closing bracket isn't part of a special operator
+        (inputsCopy[indexes[j]] === ']') && 
         (
           (inputsCopy[indexes[j-1]-1] != 'ln') && 
           (inputsCopy[indexes[j-1]-1] != 'sqr root')
         )
       ) {
         for (let i = JSON.parse(JSON.stringify(j)) - 1; i >= 0; i--) {
+          // finding the relative opening bracket 
           if (
             (inputsCopy[indexes[i]] === '[') &&
             (
@@ -449,60 +835,93 @@ const showResult = function () { //
             )
           ) {
 
+            // getting the expression within the selected brackets
             let withinBrackets = JSON.parse(JSON.stringify(inputsCopy));
             withinBrackets = withinBrackets.slice(+indexes[i] + 1, +indexes[j]);
-            console.log(withinBrackets);
-            console.log(indexes[i]+1);
-            console.log(indexes[j]);
 
             let startIndex = indexes[i];
 
-            let numberOfDeletions = (indexes[j] - indexes[i] + 1);
+            // number of inputsCopy elements that'll be removed
+            let numberOfRemovals = (+indexes[j] - +indexes[i] + 1);
 
-            //let auxArray = inputsCopy.slice(0, startIndex); // switches the expression and its container brackets for their parsed value
-            
-            //auxArray.push(String(parseExpression(withinBrackets)));
-
-            //auxArray.push(inputsCopy.slice(startIndex + numberOfDeletions));
-
-            inputsCopy.splice(startIndex, numberOfDeletions, String(parseExpression(withinBrackets))); // switches the expression and its container brackets for their parsed value
+            // switching both the expression and its container brackets for their parsed value
+            inputsCopy.splice(startIndex, numberOfRemovals, String(parseExpression(withinBrackets))); 
   
+            // retagging the brackets left in inputsCopy
             bracketIndexes = bracketTagger(inputsCopy);
             
             indexes = Object.keys(bracketIndexes);
 
             j = -1;
+            
+            break;
           }
-          break;
         }
       }
     }
+  
+  // if there is an odd number of brackets
   } else {
-    alert('Invalid input: check for missing brackets.');
+    
+    let auxString = '';
+
+    auxString = display.textContent;
+    display.textContent = 'Invalid entry: check for missing brackets.';
+    display.style.fontSize = '1rem';
+
+    // return to old display after 1,5 seconds
+    setTimeout(
+      () => {
+        display.textContent = auxString;
+        setDisplaySize();
+      }, 1500
+    );
+
     return;
   }
   
-  console.log('this is inputsCopy after loops:' + inputsCopy);
-  calculationStorage = parseExpression(inputsCopy);
-  console.log('this is calculationStorage after loops:' + calculationStorage);
+  // filtering eventual wrapping brackets left
+  lastCalculation = parseExpression(inputsCopy).filter((number) => !isNaN(number)); 
   
-  if (calculationStorage[0] === undefined) {
-    display.textContent = 'Invalid entry'
+  // if the calculation has returned an undefined value
+  if (lastCalculation[lastCalculation.length - 1] === undefined) {
+    
+    let auxString = '';
+    auxString = display.textContent;
+
+    display.textContent = 'Invalid entry.';
+    setDisplaySize();
+
+    setTimeout(() => {
+      display.textContent = auxString;
+      setDisplaySize();
+    }, 1500);
+    
+    return;
+  
+  // applying scientific notation on the result value if needed:
+  } else if (+lastCalculation[lastCalculation.length - 1] > (10**9)) {
+    
+    let auxNumber = parseFloat(lastCalculation[lastCalculation.length - 1]).toExponential(4);
+    displayArray = auxNumber;
+    display.textContent = displayArray.replace(/\./g, ',');
+  
   } else {
-    displayArray = JSON.parse(JSON.stringify(calculationStorage.slice())); // check if it's the case for this assignment resulting in a shallow copy
+    displayArray = [];
+    displayArray.push((lastCalculation[lastCalculation.length - 1]));
     display.textContent = numberFormatter.format(parseFloat(displayArray));
   }
-/*
-  calculationStorage = undefined ? display.textContent = 'Invalid entry(ies)': displayArray = calculationStorage;
-  display.textContent = numberFormatter.format(parseFloat(displayArray));
-  console.log('this is inputsCopy after "for" loop:' + inputsCopy); */
+
+  // set justPressedResult to 1 and normal display size
+  justPressedResult = 1;
+  previousCalculationIndicator = 1;
+  setDisplaySize();
 
 };
 
 
 /////////////////////////////////////////////////////// declaring DOM variables /////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/* short explanation text*/
 
 // display
 
@@ -523,8 +942,9 @@ const rootOperator = document.getElementById('root-operator');
 const resultKey = document.getElementById('result-key');
 const displayClearing = document.getElementById('display-clearing-key');
 const backspaceKey = document.getElementById('backspace-key');
-const openningBracketsKey = document.getElementById('openning-brackets-key');
-const closingBracketsKey = document.getElementById('closing-brackets-key');
+const openingBracketKey = document.getElementById('opening-brackets-key');
+const closingBracketKey = document.getElementById('closing-brackets-key');
+const signInverterKey = document.getElementById('sign-inverter');
 
 //number keys
 
@@ -539,7 +959,7 @@ const numberEight = document.getElementById('number-eight');
 const numberNine = document.getElementById('number-nine');
 const decimalSeparator = document.getElementById('decimal-separator');
 const numberZero = document.getElementById('number-zero');
-const signInverter = document.getElementById('sign-inverter');
+
 
 //special numbers keys
 
@@ -549,8 +969,6 @@ const piNumber = document.getElementById('pi-number-key');
 
 //////////////////////////////// creating event listeners //////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-/* short explanation text*/
 
 /* There are two ways of making commands and inputs:
       by clicking on the virtual keys; or 
@@ -574,8 +992,9 @@ rootOperator.addEventListener('click', onDisplay);
 resultKey.addEventListener('click', showResult);
 displayClearing.addEventListener('click', utilities.display_clearing);
 backspaceKey.addEventListener('click', utilities.backspace); 
-openningBracketsKey.addEventListener('click', onDisplay);
-closingBracketsKey.addEventListener('click', onDisplay);
+openingBracketKey.addEventListener('click', onDisplay);
+closingBracketKey.addEventListener('click', onDisplay);
+signInverterKey.addEventListener('click', signInverterFunction);
 
 //number keys
 
@@ -590,7 +1009,6 @@ numberEight.addEventListener('click', onDisplay);
 numberNine.addEventListener('click', onDisplay);
 decimalSeparator.addEventListener('click', onDisplay);
 numberZero.addEventListener('click', onDisplay);
-signInverter.addEventListener('click', onDisplay);
 
 //special numbers keys
 
@@ -600,24 +1018,41 @@ piNumber.addEventListener('click', onDisplay);
 
 ///////////physical keys
 
-/*
-document.addEventListener("keydown", function(event) {
-  // Get the key that's been pressed
-  let key = event.key;
+const keyMap = {
+  
+ // number keys 
+  1: numberOne,
+  2: numberTwo,
+  3: numberThree,
+  4: numberFour,
+  5: numberFive,
+  6: numberSix,
+  7: numberSeven,
+  8: numberEight,
+  9: numberNine,
+  0: numberZero,
+  ',': decimalSeparator,
+  
+  // operator keys
+  '+':  additionOperator,
+  '-':  subtractionOperator,
+  '*':  multiplicationOperator,
+  '/':  divisionOperator,
+  '~':  potentiationOperator,
+  'l': logarithmOperator, 
+  's': rootOperator,
 
-  // Perform actions based on the key
-  if (key === "ArrowUp") {
-    // Code to be executed when the "ArrowUp" key is pressed
-    console.log("Up arrow key pressed");
-    // Perform additional actions specific to the "ArrowUp" key
-  } else if (key === "ArrowDown") {
-    // Code to be executed when the "ArrowDown" key is pressed
-    console.log("Down arrow key pressed");
-    // Perform additional actions specific to the "ArrowDown" key
-  } else {
-    // Code to be executed for other keys
-    console.log("Key pressed:", key);
-  }
-}
-);
-*/
+  // utility keys
+  '[': openingBracketKey,
+  ']': closingBracketKey,
+  ',': decimalSeparator,
+  'Backspace': backspaceKey,
+  'Escape': displayClearing, 
+  'sign_inverter': signInverterKey,
+  'e': eulersNumber,
+  'p': piNumber,
+  'Enter': resultKey
+};
+
+document.addEventListener("keydown", physicalKeysDisplay);
+document.addEventListener('keyup', physicalKeysHover);

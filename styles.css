@@ -3,10 +3,10 @@
 :root {
   --display-color: #CAD0D1;
   --operator-keys-color: #9DA8AB;
-  --interface-bg-color: #3CA699; /* background color */
-  --bg-color: #BB4453; /* background color */
-  --key-bg-color: #1E544D;
-  --key-hover-bg-color: #2A756C;
+  --interface-bg-color: #75bdb6cf;
+  --bg-color: rgba(47, 49, 50, 0.74); /* background color */
+  --key-bg-color: #1e4054;
+  --key-hover-bg-color: #2a7575;
 }
 
 
@@ -26,7 +26,8 @@ body {
   border: 0.01rem solid black;
   border-top: solid black 0.5rem;
   border-radius: 3%;
-  max-width: 57.5vw;
+  /* max-width: 57.5vw; */
+  width: 195px;
   background-color: var(--interface-bg-color);
   box-shadow: 4px 4px 10px #06110F; 
 }
@@ -43,7 +44,7 @@ body {
   border: 0.1em solid black;
   font-size: 1.5rem;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  overflow: scroll;
+  overflow: auto;
 }
 
 
@@ -63,6 +64,10 @@ body {
 
 .key:hover {
   background-color: var(--key-hover-bg-color);
+}
+
+.hover-effect { /* class to be dynamically added when pressing physical keys */
+  background-color: var(--key-hover-bg-color); 
 }
 
 .wrapper {
@@ -86,9 +91,7 @@ body {
 
 
 
-/*----------------------- operator keys --------------------------*/
-
-
+/*----------------------- particular treatments --------------------------*/
 
 /*----------------------- utility keys -----------------------------*/
 
@@ -96,21 +99,38 @@ body {
   padding-bottom: 0.12rem;
 }
 
-
 /*----------------------- number keys -----------------------------*/
-
 
 #euler-number-key {
   padding-bottom: 0.12rem;
 }
 
-/*----------------------- all sectors -----------------------------*/
 
-
+/*----------------------- media query: screens wider than 600px -----------------------------*/
 
 @media (min-width: 600px)
 {
-  :root {
-    --bg-color: rgb(0, 255, 123); /* background color */
+  #interface-perimeter {
+    /* width: 300px; */
+    width: 27vw;
+    height: 65vh;
+  }  
+
+  #display {
+    height: 17vh;
+    font-size: 2.5rem;    
   }
+
+  .wrapper:not(:last-child) {
+    height: 14.5vh;
+  }
+
+#number-key-wrapper {
+  height: 19vh;
+}
+
+  .key {
+    font-size: 1.4rem;
+  }
+  
 }
