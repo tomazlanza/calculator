@@ -4,7 +4,7 @@
   --display-color: #CAD0D1;
   --operator-keys-color: #9DA8AB;
   --interface-bg-color: #75bdb6cf;
-  --bg-color: rgba(47, 49, 50, 0.74); /* background color */
+  --bg-color: rgba(36, 30, 30, 0.74); /* background color */
   --key-bg-color: #1e4054;
   --key-hover-bg-color: #2a7575;
 }
@@ -15,19 +15,23 @@
 * {box-sizing: border-box;} /*assures every element does not exceed its specified width and height*/
 
 body {
-  background-color: var(--bg-color); 
+  background-color: var(--bg-color);
+  height: 100vh;
   display: flex;
   justify-content: center;
+  align-items: center;
 } 
 
 #interface-perimeter {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   border: 0.01rem solid black;
   border-top: solid black 0.5rem;
-  border-radius: 3%;
-  /* max-width: 57.5vw; */
-  width: 195px;
+  border-top-left-radius: 3%;
+  border-top-right-radius: 3%;
+  height: 400px;
+  width: 320px;
   background-color: var(--interface-bg-color);
   box-shadow: 4px 4px 10px #06110F; 
 }
@@ -39,10 +43,10 @@ body {
   display: flex;
   justify-content: end;
   align-items: center;
-  height: 10vh;
+  height: 20vh;
   background-color: var(--display-color);
   border: 0.1em solid black;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
   overflow: auto;
 }
@@ -52,10 +56,12 @@ body {
 
 .key {
   width: 33%; 
+  height: 25%;
   border-radius: 20%;
-  border: 0.05rem solid black;
   background-color: var(--key-bg-color);
   color: white;
+  font-size: 1.2rem;
+  overflow: hidden;
 }
 
 .key:not(.number-key) {
@@ -73,22 +79,18 @@ body {
 .wrapper {
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: wrap; 
   border: 0.1rem solid black;  
   padding-top: 0.2rem;
   padding-bottom: 0.2rem;
 }
 
 #key-wrapper {
+  display: flex;
+  height: 75vh;
   border-bottom-left-radius: 3%;
   border-bottom-right-radius: 3%;
 }
-
-#number-key-wrapper {
-  border-bottom-left-radius: 3%;
-  border-bottom-right-radius: 3%;
-}
-
 
 
 /*----------------------- particular treatments --------------------------*/
@@ -99,38 +101,56 @@ body {
   padding-bottom: 0.12rem;
 }
 
+#result-key {
+  background-color: rgba(231, 86, 86, 0.882);
+}
+
+#result-key:hover {
+  background-color: rgb(199, 70, 70);
+}
+
+
+#root-operator {
+  display: flex;
+  justify-content: center;
+}
+
+#operator-and-utility-wrapper {
+  display: grid;
+  justify-content: center;
+}
+
 /*----------------------- number keys -----------------------------*/
 
 #euler-number-key {
   padding-bottom: 0.12rem;
 }
 
+.number-key {
+  font-size: 1.2rem;
+}
+
+/* #number-key-wrapper {
+  border-bottom-left-radius: 3%;
+  border-bottom-right-radius: 3%;
+} */
 
 /*----------------------- media query: screens wider than 600px -----------------------------*/
 
-@media (min-width: 600px)
+@media (min-width: 700px)
 {
   #interface-perimeter {
-    /* width: 300px; */
-    width: 27vw;
-    height: 65vh;
+    width: 38vw;
+    display: flex;
   }  
 
+  #key-wrapper {
+    flex-direction: row;
+    justify-content: space-evenly;
+  }
+
   #display {
-    height: 17vh;
     font-size: 2.5rem;    
   }
 
-  .wrapper:not(:last-child) {
-    height: 14.5vh;
-  }
-
-#number-key-wrapper {
-  height: 19vh;
-}
-
-  .key {
-    font-size: 1.4rem;
-  }
-  
 }

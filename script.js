@@ -513,8 +513,8 @@ const onDisplay = function () {
     // #4 // normal and 'special' numbers
     } else if (
       (
-      !operators.hasOwnProperty(displayArray[displayArray.length - 1]) &&
-      !utilities.hasOwnProperty(displayArray[displayArray.length - 1])
+        !operators.hasOwnProperty(displayArray[displayArray.length - 1]) &&
+        !utilities.hasOwnProperty(displayArray[displayArray.length - 1])
       ) &&
       !operators.hasOwnProperty(this.textContent) && 
       !utilities.hasOwnProperty(this.textContent)
@@ -531,15 +531,15 @@ const onDisplay = function () {
         (!isNaN(unformattedDisplayElement)) 
       ) {
       
-        if (unformattedDisplayElement === 0){
-          displayArray.shift();
-          displayArray.push(this.textContent);
-          displayArray[displayArray.length - 1] = numberFormatter.format(displayArray[displayArray.length - 1]);
-        } else {
-          displayArray[displayArray.length - 1] = unformattedDisplayElement.toString(); 
-          displayArray[displayArray.length - 1] += this.textContent; 
-          displayArray[displayArray.length - 1] = numberFormatter.format(displayArray[displayArray.length - 1]);
-        }
+          if (unformattedDisplayElement === 0){
+            displayArray.shift();
+            displayArray.push(this.textContent);
+            displayArray[displayArray.length - 1] = numberFormatter.format(displayArray[displayArray.length - 1]);
+          } else {
+            displayArray[displayArray.length - 1] = unformattedDisplayElement.toString(); 
+            displayArray[displayArray.length - 1] += this.textContent; 
+            displayArray[displayArray.length - 1] = numberFormatter.format(displayArray[displayArray.length - 1]);
+          }
       
       } else {
         displayArray.push(this.textContent);
@@ -567,10 +567,25 @@ const onDisplay = function () {
         displayArray.push(inputs[inputs.length - 1]);
     }
       
-    display.textContent = displayArray.join(' ');    
+    // displayArray elements must now be formatted before being inserted in display
+    
+    let auxArray = displayArray.join(' ').split(' ');  // fast way to create a different (shallow?) copy
 
-  }
-  
+    // a not-yet-effective function
+    const elementFormatter = (element) => {
+      let formattedElement = element;
+      for(let i = 0; i < element.length; i ++){
+        if(element[0][i] === '.'){
+          // const formattedElement = element.textContent.replace(/\,/g, '.');
+          formattedElement = numberFormatter.format(element);
+        }
+      }     
+      return formattedElement;
+    }
+    
+    // display.textContent = auxArray.map(elementFormatter);    
+    display.textContent = auxArray.join(' ');    
+  }    
   //// setting font size based on inputs length 
   //////////////////
   setDisplaySize();
@@ -578,7 +593,7 @@ const onDisplay = function () {
   //resetting indicators
   decimalIndicator = 0; 
   justPressedResult = 0; 
-}
+};
 
 ///////////// functions for listening physical keys
 
