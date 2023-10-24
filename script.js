@@ -71,7 +71,7 @@ const numberFormatter = new Intl.NumberFormat('pt-br', {maximumFractionDigits: 6
 function setDisplaySize () { 
   const numberOfCharacters = display.textContent.split('');
  
-  const mediaQuery = window.matchMedia("(min-width: 600px)");
+  const mediaQuery = window.matchMedia("(min-width: 700px)");
 
   // // Function to handle changes in the media query state
   function handleMediaQueryChange(mediaQuery) {
@@ -83,11 +83,11 @@ function setDisplaySize () {
       numberOfCharacters.length > 30 ? display.style.fontSize = '1.75rem' : null;
 
     } else {
-      numberOfCharacters.length < 14 ? display.style.fontSize = '1.5rem' : null;
-      numberOfCharacters.length > 15 ? display.style.fontSize = '1.3rem' : null;
-      numberOfCharacters.length > 20 ? display.style.fontSize = '1.1rem' : null;
-      numberOfCharacters.length > 25 ? display.style.fontSize = '0.9rem' : null;
-      numberOfCharacters.length > 30 ? display.style.fontSize = '0.75rem' : null;
+      numberOfCharacters.length < 14 ? display.style.fontSize = '2rem' : null;
+      numberOfCharacters.length > 15 ? display.style.fontSize = '1.85rem' : null;
+      numberOfCharacters.length > 20 ? display.style.fontSize = '1.7rem' : null;
+      numberOfCharacters.length > 25 ? display.style.fontSize = '1.5rem' : null;
+      numberOfCharacters.length > 30 ? display.style.fontSize = '1.35rem' : null;
 
     }
   }  

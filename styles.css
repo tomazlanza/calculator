@@ -55,12 +55,12 @@ body {
 /*--------------------------------- all keys -----------------------------------*/
 
 .key {
-  width: 30%; 
+  width: 31%; 
   height: 25%;
-  border-radius: 35%;
+  border-radius: 25%;
   background-color: var(--key-bg-color);
   color: white;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   overflow: hidden;
 }
 
@@ -83,10 +83,15 @@ body {
   border: 0.1rem solid black;  
   padding-top: 0.2rem;
   padding-bottom: 0.2rem;
+  width: 95%;
+  margin-right: 0.4rem;
+  margin-left: 0.4rem;
 }
 
 #key-wrapper {
   display: flex;
+  justify-content: center;
+  align-items: stretch;
   height: 75vh;
   border-bottom-left-radius: 3%;
   border-bottom-right-radius: 3%;
@@ -102,11 +107,12 @@ body {
 }
 
 #result-key {
-  background-color: rgba(231, 86, 86, 0.882);
+  background-color: rgb(199, 70, 70);
 }
 
 #result-key:hover {
-  background-color: rgb(199, 70, 70);
+  
+  background-color: rgba(231, 86, 86, 0.882);
 }
 
 
@@ -127,7 +133,8 @@ body {
 }
 
 .number-key {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
+  width: 27%;
 }
 
 /* #number-key-wrapper {
@@ -153,6 +160,11 @@ body {
     font-size: 2.5rem;    
   }
 
+  .wrapper {
+  width: auto;
+  margin-right: 0;
+  margin-left: 0;
+  }
   /* .key {
     width: 25%;
   } */
