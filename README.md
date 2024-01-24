@@ -1,1 +1,5 @@
-The intent of this project is developing a calculator with only HTML, CSS, and JavaScript, without using any library or framework.
+# Calculator
+
+The intent of this project was developing a basic calculator app using only HTML5, plain CSS, and vanilla JavaScript (ES6).
+
+It's hosted here: https://tomazlanza.github.io/calculator/
