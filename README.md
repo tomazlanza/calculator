@@ -16,9 +16,9 @@ For non-integer numbers, the app uses the comma ',' as decimal separator.
 
 Particular attention to how special operators (_square root_ and _natural logarithm_) behave:
 
-When their keys are pressed, the calculator already includes an opening brackets ‘[‘ that goes after the operator name. 
+* when their keys are pressed, the calculator already includes an opening bracket ‘[‘ that goes after the operator name; 
 
-After finishing writing the expression to be evaluated, the user has to delimit it with a closing bracket ‘]’ to match the opening one.
+* after finishing writing the expression to be evaluated, the user has to delimit it with a closing bracket ‘]’ to match the opening one.
 
 For instance:
 
