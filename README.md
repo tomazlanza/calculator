@@ -2,7 +2,7 @@
 
 Basic calculator app developed with HTML5, plain CSS, and vanilla JavaScript: https://tomazlanza.github.io/calculator/
 
-It was made for studying purposes on general ES5 and ES6 JavaScript features, including built-in data structures and methods.
+It was made for studying purposes on general ES5 and ES6 JavaScript features, including built-in classes, methods, and data structures.
 
 ## Usage
 
