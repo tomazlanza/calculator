@@ -7,22 +7,37 @@
   --bg-color: rgba(36, 30, 30, 0.74); /* background color */
   --key-bg-color: #1e4054;
   --key-hover-bg-color: #2a7575;
+  --openning-bg-color: #BDB675;
 }
 
 
-/*-------------------------- applied to all elements or the 'main' ones -----------------------*/
+/*-------------------------- applied either to all elements or the 'main' ones -----------------------*/
+
+/* html {
+  background-color: var(--bg-color);
+} */
 
 * {box-sizing: border-box;} /*assures every element does not exceed its specified width and height*/
 
 body {
   background-color: var(--bg-color);
-  height: 100vh;
+  height: 100dvh;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  overflow: hidden;
 } 
 
+.background-after-openning {
+  background-image: url("./background-image.jpg");
+  background-size: cover;
+}
+
 #interface-perimeter {
+  position: relative;
+  top: 3%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -33,7 +48,7 @@ body {
   height: 400px;
   width: 320px;
   background-color: var(--interface-bg-color);
-  box-shadow: 4px 4px 10px #06110F; 
+  box-shadow: 4px 4px 10px #06110F;
 }
 
 
@@ -53,6 +68,22 @@ body {
 
 
 /*--------------------------------- all keys -----------------------------------*/
+
+button {
+  cursor: pointer;
+  transform: translateY(-2000%);
+  animation: openningEffect 1.5s ease forwards;
+  animation-delay: calc(var(--order)*0.5s);
+}
+
+@keyframes openningEffect {
+  0% {
+    transform: translateY(-2000%);
+  }
+  100% {
+    transform: translateY(0%);
+  }
+}
 
 .key {
   width: 31%; 

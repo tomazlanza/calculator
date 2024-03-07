@@ -1072,3 +1072,24 @@ const keyMap = {
 
 document.addEventListener("keydown", physicalKeysDisplay);
 document.addEventListener('keyup', physicalKeysHover);
+
+///////////// body animation
+
+// const interfacePerimeter = document.getElementById("interface-perimeter");
+const body = document.querySelector("body")
+
+const changingBodyBackground = () => {
+  body.classList.add("background-after-openning")
+}
+
+window.addEventListener(
+  "DOMContentLoaded",
+  () => {
+    setTimeout(
+      changingBodyBackground,
+      2000
+    )
+  }
+)
+
+

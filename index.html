@@ -6,6 +6,8 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Tomaz Mendes Lanza Ferreira">
+  <meta name="description" content="A basic calculator app.">
 
   <link rel="stylesheet" href="styles.css">
   <script type="module" defer src="script.js"></script>
@@ -15,49 +17,49 @@
 </head>
 
 <body>
-
+  
   <div id = 'interface-perimeter'>
     <section id="display">0</section>
-
+  
     <section id="key-wrapper">
-
+  
       <section id="operator-and-utility-wrapper">
         <section id="operator-key-wrapper" class="wrapper">
-          <button id="subtraction-operator" class="key operator-key first-in-the-row">-</button> 
-          <button id="addition-operator" class="key operator-key">+</button> 
-          <button id="multiplication-operator" class="key operator-key">*</button> 
-          <button id="division-operator" class="key operator-key first-in-the-row">/</button>
-          <button id="potentiation-operator" class="key operator-key">^</button>
-          <button id="logarithm-operator" class="key operator-key">ln</button>
-          <button id="root-operator" class="key operator-key">sqr root</button> 
+          <button style="--order: 1" id="subtraction-operator" class="key operator-key first-in-the-row">-</button> 
+          <button style="--order: 1" id="addition-operator" class="key operator-key">+</button> 
+          <button style="--order: 1" id="multiplication-operator" class="key operator-key">*</button> 
+          <button style="--order: 1" id="division-operator" class="key operator-key first-in-the-row">/</button>
+          <button style="--order: 1" id="potentiation-operator" class="key operator-key">^</button>
+          <button style="--order: 1" id="logarithm-operator" class="key operator-key">ln</button>
+          <button style="--order: 1" id="root-operator" class="key operator-key">sqr root</button> 
         </section>
-
+  
         <section id="utility-key-wrapper" class="wrapper">
-          <button id="opening-brackets-key" class="key utility-key bracket-key first-in-the-row">[</button>
-          <button id="closing-brackets-key" class="key utility-key bracket-key">]</button>
-          <button id="display-clearing-key" class="key utility-key ">C</button>
-          <button id="eulers-number-key" class="key utility-key first-in-the-row">e</button>
-          <button id="pi-number-key" class="key utility-key">pi</button>
-          <button id="backspace-key" class="key utility-key">c--</button>
-          <button id="result-key" class="key utility-key">=</button>
+          <button style="--order: 0" id="opening-brackets-key" class="key utility-key bracket-key first-in-the-row">[</button>
+          <button style="--order: 0" id="closing-brackets-key" class="key utility-key bracket-key">]</button>
+          <button style="--order: 0" id="display-clearing-key" class="key utility-key ">C</button>
+          <button style="--order: 0" id="eulers-number-key" class="key utility-key first-in-the-row">e</button>
+          <button style="--order: 0" id="pi-number-key" class="key utility-key">pi</button>
+          <button style="--order: 0" id="backspace-key" class="key utility-key">c--</button>
+          <button style="--order: 0" id="result-key" class="key utility-key">=</button>
         </section>
       </section>
-
+  
       <section id="number-key-wrapper" class="wrapper">
-        <button id="number-one" class="key number-key">1</button>
-        <button id="number-two" class="key number-key">2</button>
-        <button id="number-three" class="key number-key">3</button>
-        <button id="number-four" class="key number-key">4</button>
-        <button id="number-five" class="key number-key">5</button>
-        <button id="number-six" class="key number-key">6</button>
-        <button id="number-seven" class="key number-key">7</button>
-        <button id="number-eight" class="key number-key">8</button>
-        <button id="number-nine" class="key number-key">9</button>
-        <button id="decimal-separator" class="key number-key">,</button>
-        <button id="number-zero" class="key number-key">0</button>      
-        <button id="sign-inverter" class="key number-key">-/+</button>
+        <button style="--order: 1" id="number-seven" class="key number-key">7</button>
+        <button style="--order: 1" id="number-eight" class="key number-key">8</button>
+        <button style="--order: 1" id="number-nine" class="key number-key">9</button>
+        <button style="--order: 1" id="number-four" class="key number-key">4</button>
+        <button style="--order: 1" id="number-five" class="key number-key">5</button>
+        <button style="--order: 1" id="number-six" class="key number-key">6</button>
+        <button style="--order: 0" id="number-one" class="key number-key">1</button>
+        <button style="--order: 0" id="number-two" class="key number-key">2</button>
+        <button style="--order: 0" id="number-three" class="key number-key">3</button>
+        <button style="--order: 0" id="decimal-separator" class="key number-key">,</button>
+        <button style="--order: 0" id="number-zero" class="key number-key">0</button>      
+        <button style="--order: 0" id="sign-inverter" class="key number-key">-/+</button>
       </section>
-
+  
     </section>
   </div>
 
